@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analog Stopwatch with Lap Feature</title>
+
+    <!-- ==== custom css code ==== -->
+
+    <style>
+      /* Page layout and background */
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      /* Main stopwatch layout */
+      .stopwatch-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      /* Circular analog stopwatch */
+      .analog {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        border: 10px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Rotating needle inside the analog dial */
+      .needle {
+        position: absolute;
+        width: 2px;
+        height: 90px;
+        background: red;
+        top: 10px;
+        left: 50%;
+        transform-origin: bottom;
+        transform: rotate(0deg);
+      }
+
+      /* Digital time display */
+      .digital {
+        font-size: 3rem;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px #00f2ff;
+      }
+
+      /* Stopwatch buttons */
+      .buttons button {
+        padding: 0.8rem 1.2rem;
+        margin: 0 0.5rem;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(to right, #2b5876, #4e4376);
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+      }
+
+      /* Button hover effect */
+      .buttons button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(to right, #4e4376, #2b5876);
+      }
+
+      /* Lap list container */
+      .laps {
+        margin-top: 1rem;
+        width: 300px;
+        max-height: 150px;
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Individual lap item */
+      .lap-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+
+      /* Stopwatch status text */
+      .status {
+        font-size: 1.1rem;
+        margin-top: -1rem;
+        color: #00f2ff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ==== custom html code ==== -->
+    <!-- Stopwatch Container -->
+    <div class="stopwatch-container">
+      <!-- Analog dial with rotating needle -->
+      <div class="analog">
+        <div class="needle" id="needle"></div>
+      </div>
+
+      <!-- Digital time display -->
+      <div class="digital" id="timeDisplay">00:00.00</div>
+
+      <!-- Status text (e.g. Ready, Running, Stopped) -->
+      <div class="status" id="statusDisplay">Ready</div>
+
+      <!-- Control buttons -->
+      <div class="buttons">
+        <button onclick="startStopwatch()">Start</button>
+        <button onclick="stopStopwatch()">Stop</button>
+        <button onclick="resetStopwatch()">Reset</button>
+        <button onclick="recordLap()">Lap</button>
+      </div>
+
+      <!-- Lap records display -->
+      <div class="laps" id="lapsContainer">
+        <strong>Lap Times</strong>
+        <div id="laps"></div>
+      </div>
+    </div>
+
+    <!-- ==== custom javascript code ==== -->
+    <script>
+      // Variables to track time and state
+      let startTime,
+        updatedTime,
+        difference = 0;
+      let timerInterval;
+      let isRunning = false;
+      let lapCounter = 1;
+
+      // DOM references
+      const needle = document.getElementById("needle");
+      const statusDisplay = document.getElementById("statusDisplay");
+
+      /**
+       * Updates the time display and rotates the needle
+       */
+      function updateDisplay() {
+        updatedTime = new Date().getTime();
+        difference = updatedTime - startTime;
+
+        // Calculate minutes, seconds, milliseconds
+        let milliseconds = parseInt((difference % 1000) / 10);
+        let seconds = parseInt((difference / 1000) % 60);
+        let minutes = parseInt((difference / (1000 * 60)) % 60);
+
+        // Update digital display
+        document.getElementById("timeDisplay").textContent = `${String(
+          minutes
+        ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(
+          milliseconds
+        ).padStart(2, "0")}`;
+
+        // Rotate the needle based on time
+        let rotation = ((difference % 60000) / 60000) * 360;
+        needle.style.transform = `rotate(${rotation}deg)`;
+      }
+
+      /**
+       * Starts the stopwatch
+       */
+      function startStopwatch() {
+        if (!isRunning) {
+          startTime = new Date().getTime() - difference; // Resume from paused time
+          timerInterval = setInterval(updateDisplay, 10); // Update every 10ms
+          isRunning = true;
+          statusDisplay.textContent = "Running...";
+        }
+      }
+
+      /**
+       * Stops/pauses the stopwatch
+       */
+      function stopStopwatch() {
+        if (isRunning) {
+          clearInterval(timerInterval); // Stop updates
+          isRunning = false;
+          statusDisplay.textContent = "Stopped";
+        }
+      }
+
+      /**
+       * Resets the stopwatch and all values
+       */
+      function resetStopwatch() {
+        clearInterval(timerInterval); // Stop any running timer
+        difference = 0;
+        isRunning = false;
+        document.getElementById("timeDisplay").textContent = "00:00.00"; // Reset time
+        needle.style.transform = "rotate(0deg)"; // Reset needle
+        lapCounter = 1;
+        document.getElementById("laps").innerHTML = ""; // Clear lap list
+        statusDisplay.textContent = "Ready";
+      }
+
+      /**
+       * Records the current lap time
+       */
+      function recordLap() {
+        if (!isRunning) return; // Ignore if stopwatch isn't running
+
+        const lapTime = document.getElementById("timeDisplay").textContent;
+        const lap = document.createElement("div");
+        lap.className = "lap-item";
+        lap.innerHTML = `<span>Lap ${lapCounter++}</span><span>${lapTime}</span>`;
+        document.getElementById("laps").prepend(lap); // Add to top of lap list
+      }
+    </script>
+  </body>
+</html>
