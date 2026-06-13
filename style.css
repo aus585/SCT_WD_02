@@ -1,0 +1,114 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Main stopwatch layout */
+.stopwatch-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Circular analog stopwatch */
+.analog {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border: 10px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.needle {
+  position: absolute;
+  width: 2px;
+  height: 90px;
+  background: red;
+  top: 10px;
+  left: 50%;
+  transform-origin: bottom;
+  transform: rotate(0deg);
+}
+
+.digital {
+  font-size: 3rem;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px #00f2ff;
+}
+
+.buttons button {
+  padding: 0.8rem 1.2rem;
+  margin: 0 0.5rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right, #2b5876, #4e4376);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.buttons button:hover {
+  transform: scale(1.05);
+}
+
+.laps {
+  margin-top: 1rem;
+  width: 300px;
+  max-height: 150px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.lap-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.status {
+  font-size: 1.1rem;
+  color: #00f2ff;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  body {
+    padding: 20px 10px;
+    height: auto;
+  }
+
+  .analog {
+    width: 160px;
+    height: 160px;
+  }
+
+  .needle {
+    height: 70px;
+  }
+
+  .digital {
+    font-size: 2.2rem;
+  }
+
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .laps {
+    width: 90%;
+  }
+}
