@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analog Stopwatch with Lap Feature</title>
+
+  <!-- CSS Link -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="stopwatch-container">
+
+    <div class="analog">
+      <div class="needle" id="needle"></div>
+    </div>
+
+    <div class="digital" id="timeDisplay">00:00.00</div>
+
+    <div class="status" id="statusDisplay">Ready</div>
+
+    <div class="buttons">
+      <button onclick="startStopwatch()">Start</button>
+      <button onclick="stopStopwatch()">Stop</button>
+      <button onclick="resetStopwatch()">Reset</button>
+      <button onclick="recordLap()">Lap</button>
+    </div>
+
+    <div class="laps" id="lapsContainer">
+      <strong>Lap Times</strong>
+      <div id="laps"></div>
+    </div>
+
+  </div>
+
+  <!-- JS Link -->
+  <script src="script.js"></script>
+</body>
+</html>
